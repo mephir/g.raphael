@@ -198,7 +198,11 @@ Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
     if (opts.legend) {
         legend(opts.legend, opts.legendothers, opts.legendmark, opts.legendpos);
     }
-    chart.push(series, covers);
+    middleCircle = paper.circle(cx, cy, opts.middleRadius || 50);
+    middleCircle.attr('fill', '#fff');
+    middleCircle.attr('stroke', '#fff');
+    console.log(opts.circle);
+    chart.push(series, covers, middleCircle);
     chart.series = series;
     chart.covers = covers;
     return chart;
