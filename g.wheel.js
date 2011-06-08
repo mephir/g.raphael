@@ -4,7 +4,7 @@
  * Copyright (c) 2009 Dmitry Baranovskiy (http://g.raphaeljs.com)
  * Licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) license.
  */
-Raphael.fn.g.piechart = function (cx, cy, r, values, opts) {
+Raphael.fn.g.wheelchart = function (cx, cy, r, values, opts) {
     opts = opts || {};
     var paper = this,
         sectors = [],
