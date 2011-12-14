@@ -9,15 +9,18 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
   var paper = this,
     chart = this.set(),
     max = Math.max.apply(Math, values),
-    colors = opts.colors || this.g.colors,
+    colors = opts.colors || ['0-#f00-#fff', '0-#0f0-#fff', '0-#00f-#fff'];//this.g.colors,
     len = values.length,
     total = 0,
-    percents = [];
+    percents = [],
+    lengths = [],
+    paths = [];
 
     var barMaxLength = opts.barMaxLength || 190,
         barHeight = opts.barHeight || 24,
         barMargin = opts.barMargin || 4,
-        barTopMargin = opts.barTopMargin || 3,
+        barsMarginTop = opts.barsMarginTop || 8,
+        barsMarginLeft = opts.barsMarginLeft || 0,
         triangleHeight = opts.triangleHeight || 12;
 
     paper.rect(0,0,width,height).attr({fill: "#000"}); //helper in background, to remove
@@ -31,10 +34,26 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
     for(var x in values)
     {
       percents.push(Math.round((values[x] / total)*100)/100);
+      lengths.push(Math.round((values[x] * barMaxLength) / max));
+    }
+    var startY = barsMarginTop;
+    var rectLength, trianglePickY;
+
+    for(var x in lengths)
+    {
+      rectLength = lengths[x] - triangleHeight;
+      trianglePickY = Math.round(barHeight / 2);
+
+      console.log(trianglePickY);
+      paths.push(['M',barsMarginLeft,startY,
+        'L',rectLength,startY,
+        'L',(triangleHeight + rectLength),(startY + trianglePickY),
+        'L',rectLength,(startY + barHeight),
+        'L',barsMarginLeft,(startY + barHeight),'Z']);
     }
 
-    paper.path(['M',10,10,'L',100,10,'L',120,20,'L',100,30,'L',10,30,'Z']).attr('fill', '0-#f00-#fff \');
+    paper.path(paths.pop()).attr('fill', '0-#f00-#fff');
 
 
-    console.log(max, total, percents);
+    console.log(max, total, percents, lengths);
 };
