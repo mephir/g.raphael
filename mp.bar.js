@@ -37,23 +37,24 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       lengths.push(Math.round((values[x] * barMaxLength) / max));
     }
     var startY = barsMarginTop;
-    var rectLength, trianglePickY;
+    var rectLength,
+        trianglePickY = Math.round(barHeight / 2),
+        printPath;
 
     for(var x in lengths)
     {
       rectLength = lengths[x] - triangleHeight;
-      trianglePickY = Math.round(barHeight / 2);
 
-      console.log(trianglePickY);
-      paths.push(['M',barsMarginLeft,startY,
+      printPath = ['M',barsMarginLeft,startY,
         'L',rectLength,startY,
         'L',(triangleHeight + rectLength),(startY + trianglePickY),
         'L',rectLength,(startY + barHeight),
-        'L',barsMarginLeft,(startY + barHeight),'Z']);
+        'L',barsMarginLeft,(startY + barHeight),'Z'];
+
+      paper.path(printPath).attr('fill', '0-#f00-#fff');
+
+      startY = startY + barHeight + barMargin;
     }
-
-    paper.path(paths.pop()).attr('fill', '0-#f00-#fff');
-
 
     console.log(max, total, percents, lengths);
 };
