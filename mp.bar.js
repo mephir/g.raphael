@@ -17,7 +17,8 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
     var barMaxLength = opts.barMaxLength || 190,
         barHeight = opts.barHeight || 24,
         barMargin = opts.barMargin || 4,
-        barTopMargin = opts.barTopMargin || 3;
+        barTopMargin = opts.barTopMargin || 3,
+        triangleHeight = opts.triangleHeight || 12;
 
     paper.rect(0,0,width,height).attr({fill: "#000"}); //helper in background, to remove
 
@@ -26,6 +27,14 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
     {
       total += values[x];
     }
+
+    for(var x in values)
+    {
+      percents.push(Math.round((values[x] / total)*100)/100);
+    }
+
+    paper.path(['M',10,10,'L',100,10,'L',120,20,'L',100,30,'L',10,30,'Z']).attr('fill', '0-#f00-#fff \');
+
 
     console.log(max, total, percents);
 };
