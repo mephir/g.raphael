@@ -22,7 +22,8 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       triangleHeight = opts.triangleHeight || 12;
       valueSize = opts.valueSize || Math.round(barHeight * 0.9),
       valueColor = opts.valueColor || '#ffffff',
-      valueColorOutside = opts.valueColorOutside || '#444444';
+      valueColorOutside = opts.valueColorOutside || '#444444',
+      marginTextTop = opts.marginTextTop || 0;
 
   for(var x in values)
   {
@@ -40,7 +41,7 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       printPath,
       textNode,
       trianglePickY = Math.round(barHeight / 2),
-      textMarginTop = Math.round((barHeight - valueSize) / 2);
+      textMarginTop = Math.round((barHeight - valueSize) / 2) + marginTextTop;
 
   for(var x in lengths)
   {
@@ -52,7 +53,7 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       'L',rectLength,(startY + barHeight),
       'L',barsMarginLeft,(startY + barHeight),'Z'];
     paper.path(printPath).attr('fill', colors[ x % colors.length]).attr('stroke', 'none');
-    textNode = paper.text(rectLength, startY + textMarginTop + y, percents[x] + '%').attr({'font-size' : valueSize, 'fill' : valueColor});
+    textNode = paper.text(rectLength, startY + textMarginTop + y + barsMarginTop, percents[x] + '%').attr({'font-size' : valueSize, 'fill' : valueColor});
     if(textNode.getBBox().width < rectLength)
     {
       textNode.attr('text-anchor', 'end');
