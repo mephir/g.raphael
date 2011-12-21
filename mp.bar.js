@@ -23,9 +23,27 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       valueSize = opts.valueSize || Math.round(barHeight * 0.9),
       valueColor = opts.valueColor || '#ffffff',
       valueColorOutside = opts.valueColorOutside || '#444444',
-      marginTextTop = opts.marginTextTop || 0;
+      marginTextTop = opts.marginTextTop || 0,
+      chartDirection = opts.chartDirection || 'ltr';
 
-  for(var x in values)
+  if (chartDirection == 'rtl')
+  {
+    var tmp = colors,
+    colorsplited;
+
+    colors = [];
+    for (var x in tmp)
+    {
+      colorsplited = tmp[x].split('-');
+      if (colorsplited.length == 3)
+      {
+        colorsplited[0] = '180';
+      }
+      colors.push(colorsplited.join('-'));
+    }
+  }
+
+  for (var x in values)
   {
     total += values[x];
   }
@@ -41,29 +59,60 @@ Raphael.fn.g.mpbarchart = function (x, y, width, height, values, opts) {
       printPath,
       textNode,
       trianglePickY = Math.round(barHeight / 2),
-      textMarginTop = Math.round((barHeight - valueSize) / 2) + marginTextTop;
+      textMarginTop = Math.round((barHeight - valueSize) / 2) + marginTextTop,
+      x1,x2,x3,x4,x5,
+      y1,y2,y3,y4,y5,
+      textX;
 
   for(var x in lengths)
   {
     rectLength = lengths[x] - triangleHeight + barsMarginLeft;
+    /**
+     * (x1,y1)--------------(x2,y2)\
+     *                              (x3,y3)
+     * (x4,y4)--------------(x5,y5)/
+     */
+    x1 = barsMarginLeft;
+    y1 = startY;
+    x2 = rectLength;
+    y2 = y1;
+    x3 = (triangleHeight + rectLength);
+    y3 = (y1 + trianglePickY);
+    x4 = rectLength;
+    y4 = (y1 + barHeight);
+    x5 = barsMarginLeft;
+    y5 = (y1 + barHeight);
 
-    printPath = ['M',barsMarginLeft,startY,
-      'L',rectLength,startY,
-      'L',(triangleHeight + rectLength),(startY + trianglePickY),
-      'L',rectLength,(startY + barHeight),
-      'L',barsMarginLeft,(startY + barHeight),'Z'];
+    if (chartDirection == 'rtl') {
+      x1 = width - x1;
+      x2 = width - x2;
+      x3 = width - x3;
+      x4 = width - x4;
+      x5 = width - x5;
+    }
+
+    printPath = ['M',x1,y1,
+      'L',x2,y2,
+      'L',x3,y3,
+      'L',x4,y4,
+      'L',x5,y5,'Z'];
     paper.path(printPath).attr('fill', colors[ x % colors.length]).attr('stroke', 'none');
-    textNode = paper.text(rectLength, startY + textMarginTop + y + barsMarginTop, percents[x] + '%').attr({'font-size' : valueSize, 'fill' : valueColor});
+    textNode = paper.text(x2, startY + textMarginTop + y + barsMarginTop, percents[x] + '%').attr({'font-size' : valueSize, 'fill' : valueColor});
     if(textNode.getBBox().width < rectLength)
     {
-      textNode.attr('text-anchor', 'end');
+      textNode.attr('text-anchor', (chartDirection == 'rtl'?'start':'end'));
     }
     else
     {
+      textX = x2 + triangleHeight;
+      if (chartDirection == 'rtl')
+      {
+        textX = x2 - triangleHeight;
+      }
       textNode.attr({
-        'x' : (rectLength + triangleHeight),
+        'x' : textX,
         'fill' : valueColorOutside,
-        'text-anchor' : 'start'
+        'text-anchor' : (chartDirection == 'rtl'?'end':'start')
       });
     }
     startY = startY + barHeight + barMargin;
